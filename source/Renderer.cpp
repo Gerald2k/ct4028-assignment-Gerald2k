@@ -54,7 +54,7 @@ int Renderer::Initialise(HWND a_consoleWindow, unsigned int a_width, unsigned in
 	m_windowHandle = CreateWindowA("Raycaster Framework", "Main Scene",
 		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
 		windowRect.right - windowRect.left,
-		windowRect.bottom - windowRect.bottom,
+		windowRect.bottom - windowRect.top,
 		nullptr, nullptr, (HINSTANCE)GetModuleHandle(NULL), nullptr);
 	ShowWindow(m_windowHandle, SW_SHOW);
 	MoveWindow(m_windowHandle, x, y, m_windowWidth, m_windowHeight, true);
@@ -113,7 +113,10 @@ int Renderer::Initialise(HWND a_consoleWindow, unsigned int a_width, unsigned in
 void Renderer::ClearRenderBuffer()
 {
 	// Clear our bitmap window background
-	//FillRect(m_bufferDC, &clrect, (HBRUSH)(0x0000) + 2);
+	RECT clRect;
+	GetClientRect(m_windowHandle, &clRect);
+
+	FillRect(m_bufferDC, &clRect, (HBRUSH)(0x0000) + 2);
 	
 }
 

@@ -1,4 +1,5 @@
 #include <stdafx.h>
+#include "rc_ImageLoader.h"
 #include "Renderer.h"
 
 #define CONSOLE_WIDTH 120
@@ -26,6 +27,11 @@ int main(int argv, char* argc[])
 	Renderer mainWindow;
 	if (!mainWindow.Initialise(consoleWindow, windowWidth, windowHeight))
 	{
+		u32 imWidth = 0, imHeight = 0;
+		u8 imBBP = 0;
+		void* imPalette = nullptr;
+		ImageLoader::LoadFromFile("../resources/images/TITLEH.pcx" , RC_ImageType::IM_PCX, imWidth, imHeight, imBBP, imPalette);
+
 		// Seed random
 		srand((unsigned int)time(nullptr));
 
@@ -79,7 +85,7 @@ int main(int argv, char* argc[])
 				}
 				++frame;
 			}
-		}
+		} 
 	}
 
 	

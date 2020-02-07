@@ -143,6 +143,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\rc_imageLoader.cpp" />
+    <ClCompile Include="source\rc_pcxLoader.cpp" />
     <ClCompile Include="source\Renderer.cpp" />
     <ClCompile Include="source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -150,6 +152,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Raycaster_Types.h" />
+    <ClInclude Include="include\rc_ImageLoader.h" />
+    <ClInclude Include="include\rc_pcxLoader.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\stdafx.h" />
   </ItemGroup>
