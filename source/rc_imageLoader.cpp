@@ -2,13 +2,10 @@
 #include "rc_ImageLoader.h"
 #include "rc_pcxLoader.h"
 
-void* ImageLoader::LoadFromFile(const char* a_filename, u32 a_type, u32& a_w,
-	u32& a_h, u8& a_bbp, void*& a_imgPalette)
+void* ImageLoader::LoadFromFile(const char* a_filename, u32 a_imageType, u32& a_w,
+	u32& a_h, u8& a_bpp, void*& a_imgPalette)
 {
-	UNREFERENCED_PARAMETER(a_imgPalette);
-	UNREFERENCED_PARAMETER(a_bbp);
-	UNREFERENCED_PARAMETER(a_h);
-	UNREFERENCED_PARAMETER(a_w);
+	void* imageData = nullptr;
 	// Get a new file stream to load from file
 	std::fstream file;
 	file.open(a_filename, std::ios_base::in | std::ios_base::binary);
@@ -23,24 +20,31 @@ void* ImageLoader::LoadFromFile(const char* a_filename, u32 a_type, u32& a_w,
 			file.close();
 			return nullptr;
 		}
-		switch (a_type)
-		{
-		case IM_PCX:
-		{
-			break;
-		}
-		case IM_BITMAP:
-		{
-			break;
-		}
+		
 
+		// Switch statement to choose which custom image loader to call
+		switch (a_imageType)
+		{
+		case (IM_BITMAP):{ // Add this yourself Alex!
+			break;
+		}
+		case (IM_PCX):{
+			imageData = PCXLoader::LoadFromfile(&file, a_w, a_h, a_bpp, a_imgPalette);
+			if (a_bpp != 32)
+			{
+				imageData = PCXLoader::ConvertTo32bpp(imageData, a_imgPalette, a_w, a_h, a_bpp);
+			}
+			break;
+		}
+		case(IM_PPM): { // Add this from the tutorial already done!
+			break;
+		}
 		default:
 		{
-			file.close();
-			return nullptr;
+			break;
 		}
 		}
 		file.close();
 	}
-	return nullptr;
+	return imageData;
 }

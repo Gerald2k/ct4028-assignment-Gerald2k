@@ -50,5 +50,6 @@ public:
 	~PCXLoader() {};
 
 	static void* LoadFromfile(const void* a_stream, u32& a_w, u32& a_h, u8& a_bpp, void*& a_imgPalette);
+	static void* ConvertTo32bpp(void* a_imageData, void* palette, u32& a_w, u32& a_h, u8& a_bpp);
 };
 #endif // !__PCX_LOADER_H__

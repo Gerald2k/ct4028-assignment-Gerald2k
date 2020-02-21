@@ -30,7 +30,7 @@ int main(int argv, char* argc[])
 		u32 imWidth = 0, imHeight = 0;
 		u8 imBBP = 0;
 		void* imPalette = nullptr;
-		ImageLoader::LoadFromFile("../resources/images/TITLEH.pcx" , RC_ImageType::IM_PCX, imWidth, imHeight, imBBP, imPalette);
+		void* imageData = ImageLoader::LoadFromFile("../resources/images/TITLEH.pcx" , RC_ImageType::IM_PCX, imWidth, imHeight, imBBP, imPalette);
 
 		// Seed random
 		srand((unsigned int)time(nullptr));
@@ -64,15 +64,16 @@ int main(int argv, char* argc[])
 				double fElapsedTime = elapsedTime.count();
 
 				mainWindow.ClearRenderBuffer();
+				mainWindow.FillRenderBuffer(0, 0, imWidth, imHeight, imageData);
 
-				for (int i = 0; i < 5000; ++i)
+				/*for (int i = 0; i < 5000; ++i)
 				{
 					unsigned int xPos = rand() % 640;
 					unsigned int yPos = rand() % 480;
 					// Colour is in the foramt AA__BB__GG__RR
 					unsigned int colour = (rand() % 256 << 16 | rand() % 256 << 8 | rand() % 256);
 					mainWindow.FillRenderBuffer(xPos, yPos, 1, 1, &colour);
-				}
+				}*/
 
 				mainWindow.Draw();
 
