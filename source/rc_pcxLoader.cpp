@@ -1,6 +1,25 @@
 #include <stdafx.h>
 #include "rc_pcxLoader.h"
 
+int PCX_getEncodedByte(u8& a_value, u8& a_frequency, std::fstream* a_stream)
+{
+	if (a_stream->peek() == EOF)
+	{
+		return EOF;
+	}
+	a_frequency = 1;
+	a_stream->read(char*)(&a_value), 1);
+	if ((a_value & PCX_RLE_MASK) == PCX_RLE_MASK)
+	{
+		a_frequency = a_value & PCX_RLE_FREQ_MASK;
+		if (a_stream->peek() == EOF)
+		{
+			return EOF;
+		}
+		a_stream->read((char*)(&a_value), 1);
+	}
+	return 0;
+}
 
 void* PCXLoader::LoadFromfile(const void* a_stream, u32& a_w, u32& a_h, u8& a_bpp, void*& a_imgPalette)
 {
@@ -27,7 +46,7 @@ void* PCXLoader::LoadFromfile(const void* a_stream, u32& a_w, u32& a_h, u8& a_bp
 	{
 		// Ver3 had no palette and used a deault palette
 		u8* egaPalette = (u8*)(header.colourPalette);
-			for (int i = 0; i < 16; ++i)
+			for (int i = 0; i < 48; ++i)
 			{
 				egaPalette[i] = PCX_defaultPalette[i];
 			}
@@ -56,4 +75,58 @@ void* PCXLoader::LoadFromfile(const void* a_stream, u32& a_w, u32& a_h, u8& a_bp
 	}
 
 	return nullptr;
+
+	// Get pixel size of image
+	a_w = header.dimensions.right - header.dimensions.left + 1;
+	a_h = header.dimensions.bottom - header.dimensions.top + 1;
+	a_bpp = header.bitsPerPixel * header.numColourPlanes;
+
+	// Size of the decompressed image in bytes
+	u32 bytesInRow = (u32)(a_w * (float)(a_bpp / 8.0f));
+	u32 decompImageSize = a_h * bytesInRow;
+
+	// Get the pixel size of the image
+	a_w = header.dimensions.right - heaer.dimesnsions.left + 1;
+	a_h = header.dimensions.bottom - heaer.dimesnsions.top + 1;
+	a_bpp = header.bitsPerPixel * header.numColourPlanes;
+
+	u32 bytesInRow = (u32)(a_w * (float)(a_bpp / 8.f));
+	u32 decompImageSize = a_h * bytesInRow;
+
+	u32 decompScanLine = header.bytesPerScanLine * header.numColourPlanes;
+
+	u32 scanlinePadding = decompScanLine - bytesInRow;
+	u32 actualBytesPerImageRow = decompScanLine - scanlinePadding;
+
+	u8* ImageData = new u8[decompImageSize];
+	memset(ImageData, 0, decompImageSize);
+	u8* scanlineData = new u8[decompScanLine];
+	memset(scanlineData, 0, decompScanLine);
+
+	u8 value = 0;
+	u8 frequency = 0;
+
+	u32 bytesProcessed = 0;
+	std::streamsize streamLocation;
+	u32 row = 0;
+	while (row < a_h - 1)
+	{
+		streamLocation = file->tellg();
+
+		for (u8* slp = scanlineData; slp < (scanlineData + decompScanLine);)
+		{
+			if (EOF == PCX_getEncodedByte(value, frequency, file))
+			{
+				delete[] imageData;
+				ImageData = nullptr;
+				if (!a_palette)
+				{
+					delete[] a_palette;
+					a_palette = nullptr;
+				}
+				return ImageData;
+
+			}
+		}
+	}
 }
