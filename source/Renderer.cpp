@@ -74,7 +74,7 @@ int Renderer::Initialise(HWND a_consoleWindow, unsigned int a_width, unsigned in
 		m_bmpInfo = (BITMAPINFO*)data;
 		m_bmpInfo->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 		m_bmpInfo->bmiHeader.biWidth = (LONG)m_windowWidth;
-		m_bmpInfo->bmiHeader.biHeight = (LONG)m_windowHeight;
+		m_bmpInfo->bmiHeader.biHeight = -(LONG)m_windowHeight;
 		m_bmpInfo->bmiHeader.biBitCount = 32;
 		m_bmpInfo->bmiHeader.biPlanes = 1;
 		m_bmpInfo->bmiHeader.biCompression = BI_RGB;
