@@ -21,6 +21,8 @@ public:
 	void Draw();
 
 	void FillRenderBuffer(const unsigned int& a_x, const unsigned int& a_y, const unsigned int& a_width, const unsigned int& a_height, const void* a_data);
+	void FillRenderBuffer(const unsigned int& a_x, const unsigned int& a_y, const unsigned int& a_width, const unsigned int& a_height, const u32 a_colour*);
+
 	HWND GetWindowHandle() const { return m_windowHandle; }
 	HDC GetBufferContext() const { return m_bufferDC; }
 

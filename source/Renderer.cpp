@@ -145,6 +145,47 @@ void Renderer::FillRenderBuffer(const unsigned int& a_x, const unsigned int& a_y
 	}
 }
 
+void Renderer::FillRenderBuffer(const unsigned int& a_x, const unsigned int& a_y, const unsigned int& a_width, const unsigned int& a_height, const u32 a_colour*)
+{
+	// Get start index in buffer we are going to draw into
+	// This is upper left corner of our quad and test to make sure we are actually trying to draw to window
+	unsigned int index = a_x + (a_y * m_windowWidth);
+	if (index < (m_windowWidth * m_windowHeight))
+	{
+		unsigned int* backBuffer = (unsigned int*)m_bitBuffer;
+
+		// Calculate row size only once as we are only drawing quad shapes
+		// This is done in case the dimension and starting locations passed in to the function are actually outside the bounds of our renderer
+		// This ensures that we do not attempt to write to memory that is outside of the renderer buffer
+		unsigned int pixelsToFill = a_width;
+		if ((a_x + a_width) > m_windowWidth)
+		{
+			pixelsToFill = (a_width - ((a_x + a_width) - m_windowWidth));
+		}
+
+		// We need to fill a row buffer with the pixel data as memory is aligned horizontally for our renderer we can take advantage of this and
+		// fill a buffer with the pixel colour data and then re-use this buffer to draw each row of our quad using the memcpy routine.
+		u32* rowBuffer = new u32[pixelsToFill];
+		for (u32 i = 0; i < pixelsToFill; ++i)
+		{
+			rowBuffer[i] = a_colour;
+		}
+
+		// Now for each row of our quad we can copy our row buffer into our render buffer
+		for (unsigned int y = 0; y < a_height; ++y)
+		{
+			// Update our index based off our row position within the quad
+			index = a_x + ((a_y + y) * m_windowWidth);
+			// Test that we're still inside the bounds of our render buffer
+			if ((a_y + y) < m_windowHeight)
+			{
+				memcpy(&backBuffer[index], rowBuffer, pixelsToFill * BYTES_PER_PIXEL);
+				continue;
+			}
+		}
+	}
+}
+
 void Renderer::Draw() 
 {
 	RedrawWindow(m_windowHandle, nullptr, nullptr, RDW_INVALIDATE);
